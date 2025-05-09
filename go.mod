@@ -37,7 +37,3 @@ require (
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250505200425-f936aa4a68b2 // indirect
 	google.golang.org/protobuf v1.36.6 // indirect
 )
-
-replace github.com/ralvescosta/gokit/configs => ../configs
-
-replace github.com/ralvescosta/gokit/logging => ../logging
