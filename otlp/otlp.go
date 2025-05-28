@@ -1,3 +1,7 @@
+// Copyright (c) 2025, The GoKit Authors
+// MIT License
+// All rights reserved.
+
 package otlp
 
 import (
@@ -24,7 +28,7 @@ func Install(cfgs *configs.Configs) (*sdktrace.TracerProvider, error) {
 		ctx,
 		otlptracegrpc.NewClient(
 			otlptracegrpc.WithEndpoint(cfgs.OTLPConfigs.Endpoint),
-			otlptracegrpc.WithReconnectionPeriod(time.Second*30),
+			otlptracegrpc.WithReconnectionPeriod(cfgs.OTLPConfigs.ExporterReconnectionPeriod),
 			otlptracegrpc.WithTimeout(cfgs.OTLPConfigs.ExporterTimeout),
 			otlptracegrpc.WithCompressor("gzip"),
 			otlptracegrpc.WithDialOption(
