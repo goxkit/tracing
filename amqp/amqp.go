@@ -3,7 +3,7 @@
 // All rights reserved.
 
 // Package tracing provides distributed tracing capabilities using OpenTelemetry.
-package tracing
+package amqp
 
 import (
 	"context"
