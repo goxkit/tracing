@@ -2,28 +2,28 @@
 // MIT License
 // All rights reserved.
 
-// This example demonstrates using the Goxkit tracing package with ConfigsBuilder
-package examples
+// Package main provides a simple example of using the Goxkit tracing package.
+// This example shows how to set up basic tracing with OpenTelemetry.
+package main
 
 import (
 	"context"
+	"log"
+	"time"
 
-	configsBuilder "github.com/goxkit/configs_builder"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
-	"go.uber.org/zap"
+	"go.opentelemetry.io/otel/sdk/trace"
 )
 
 func main() {
-	// Initialize with ConfigsBuilder
-	// The Otlp() call enables OpenTelemetry for tracing, metrics and logging
-	cfgs, err := configsBuilder.NewConfigsBuilder().Otlp().Build()
-	if err != nil {
-		panic(err)
-	}
+	// Initialize basic OpenTelemetry setup
+	// In a real application, you would configure exporters and providers
+	tp := trace.NewTracerProvider()
+	otel.SetTracerProvider(tp)
 
-	// Get a tracer from the global provider that was configured by ConfigsBuilder
+	// Get a tracer from the provider
 	tracer := otel.GetTracerProvider().Tracer("example-service")
 
 	// Create a root span
@@ -32,14 +32,12 @@ func main() {
 
 	// Add attributes to the span for better filtering and analysis
 	rootSpan.SetAttributes(
-		attribute.String("environment", cfgs.AppConfigs.Environment.String()),
+		attribute.String("environment", "development"),
 		attribute.String("version", "1.0.0"),
 	)
 
 	// Log with trace context for correlation in observability platforms
-	cfgs.Logger.Info("Application started",
-		zap.String("service", cfgs.AppConfigs.Name),
-		zap.Any("context", ctx))
+	log.Printf("Application started")
 
 	// Create a child span for a sub-operation
 	ctx, childSpan := tracer.Start(ctx, "sub-operation")
@@ -53,16 +51,12 @@ func main() {
 		childSpan.RecordError(err)
 		childSpan.SetStatus(codes.Error, err.Error())
 
-		cfgs.Logger.Error("Operation failed",
-			zap.Error(err),
-			zap.Any("context", ctx))
+		log.Printf("Operation failed: %v", err)
 	} else {
 		// Add result as an attribute
 		childSpan.SetAttributes(attribute.String("result", result))
 
-		cfgs.Logger.Info("Operation succeeded",
-			zap.String("result", result),
-			zap.Any("context", ctx))
+		log.Printf("Operation succeeded")
 	}
 
 	// End the child span
@@ -80,6 +74,9 @@ func performOperation(ctx context.Context) (string, error) {
 
 	// Add events to the span timeline
 	span.AddEvent("operation.started")
+
+	// Simulate work time
+	time.Sleep(100 * time.Millisecond)
 
 	// Simulate work result
 	result := "operation-completed-successfully"
