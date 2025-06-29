@@ -1,6 +1,6 @@
 module github.com/goxkit/tracing
 
-go 1.24.3
+go 1.24.4
 
 require (
 	github.com/goxkit/configs v0.7.0
