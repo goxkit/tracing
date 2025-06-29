@@ -37,7 +37,7 @@ func main() {
 	)
 
 	// Log with trace context for correlation in observability platforms
-	log.Printf("Application started with trace ID: %s", rootSpan.SpanContext().TraceID().String())
+	log.Printf("Application started")
 
 	// Create a child span for a sub-operation
 	ctx, childSpan := tracer.Start(ctx, "sub-operation")
@@ -56,13 +56,11 @@ func main() {
 		// Add result as an attribute
 		childSpan.SetAttributes(attribute.String("result", result))
 
-		log.Printf("Operation succeeded: %s", result)
+		log.Printf("Operation succeeded")
 	}
 
 	// End the child span
 	childSpan.End()
-	
-	log.Printf("Example completed successfully!")
 }
 
 // performOperation simulates a traced operation
